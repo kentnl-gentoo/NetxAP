@@ -2524,7 +2524,7 @@ sub rights { (wantarray) ? @{$_[0]->{Rights}} : $_[0]->{Rights} }
 
 =head1 Myrights
 
-This is a container for C<myrights> responses>
+This is a container for C<myrights> responses
 
 =head2 mailbox
 
@@ -2808,7 +2808,7 @@ sub _parse_lang {
 
 =head1 Multipart
 
-This is a container for C<BodyStructure objects that are multipart entities.
+This is a container for C<BodyStructure> objects that are multipart entities.
 
 =head2 parts
 
@@ -2903,12 +2903,12 @@ C<text>, returns the number of lines in the entity, else returns C<undef>.
 
 =head2 envelope
 
-If the MIME content type is C<message/rfc822, returns a
+If the MIME content type is C<message/rfc822>, returns a
 C<Net::IMAP::Envelope> object, otherwise returns undef.
 
 =head2 bodystructure
 
-If the MIME content type is C<message/rfc822, returns a
+If the MIME content type is C<message/rfc822>, returns a
 C<Net::IMAP::BodyStructure> object, otherwise returns undef.
 
 =head2 md5
