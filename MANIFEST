@@ -4,12 +4,10 @@ CREDITS
 MANIFEST
 Makefile.PL
 NEWS
-Net/ACAP.pm
 Net/IMAP.pm
-Net/IMSP.pm
 Net/xAP.pm
 README
 TODO
-examples/acap.pl
 examples/imap.pl
 examples/imap2.pl
+t/01_imap_base.t

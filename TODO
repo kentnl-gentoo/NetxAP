@@ -1,44 +1,130 @@
-+ update BUGS with important malfeatures from TODO file
+###############################################################################
+General
+
++ implement autoloading
+
++ add ability to override default port
+
++ get the URI modules in a releasable state
+
 ###############################################################################
 Net::xAP
 
-* literal handling doesn't handle literals that aren't the last item
-  on the list.
-
-* the literal handling in the response method should be done with a callback
-
-* need to be able to handle literal+
-
-* the mechanism that getline uses to stuff the literal payload into
-  the string that is passed to parse_line needs to be improved.
+-------------------------------------------------------------------------------
+B the mechanism that getline uses to stuff the literal payload into
+  the string passed to parse_line needs to be improved.
   currently just tacks it onto the end.  maybe it should tack it into
   the end as a scalar ref and have parse_line look for '{\d+} SCALAR(.*)'.
   that should eliminate the chance of falsely interpreting {\d+} as a
   literal tag in instances where it isn't. make sure it derefs the
   scalar ref when it stuffs it into the list that is to be returned.
+-------------------------------------------------------------------------------
+B need to gracefully handle the server closing the connection without a bye
 
-* maybe have command failure synthesize a response object to alleviate
-  the need to check status of the command method
++ add methods for opening and closing a debug file as an alternative to stderr
 
-* there are some things in IMAP that should probably be moved to xAP.
+B there are some things in IMAP that should be moved to xAP, and vice versa
 
-* have as_astring and friends grok stringrefs
+B the addition of ACAP and IMSP might require the quotification to be
+  revamped, with more direct control being moved into the subclasses
 
-* documentation
-  * document what a callback is required to do
-  * in the docs, mention which methods are intended to be usable by
-    end-programmers and which are intended for protocol implementers
-
-+ add ability to spawn server using a 2-way pipe (needed for imap's preauth)
++ in synchronous mode, maybe have command failure synthesize a response
+  object to alleviate the need to check status of the command method
 
 + add ability to selectively turn on or off debug for individual
   commands and callbacks
 
-+ the $xAP_* variables should be constants
++ throw an error message when comment method is passed incorrect
+  parameter count
+
++ documentation
+  + document how top-level protocols should use xAP
 ###############################################################################
 Net::IMAP
 
-* implement and document prevention of ambiguous multiple pending requests
+-------------------------------------------------------------------------------
+B need to handle modified-utf-7 mailbox names correctly
+
+B make the regex in _extract_resp_code more rigorous
+
+B have callbacks do stronger arg checking in response data, particularly
+  arg counts.
+
+B clean up and test behavior when connection is terminated due to autologout
+-------------------------------------------------------------------------------
++ maybe implement extensions as separate modules
+
++ force a LOGOUT if IMAP object goes out of scope
+
++ review various internet drafts to make sure they can be supported when RFCed
+  + id		ok
+  + sort	ok
+  + thread	ok
+  + children	ok
+  + view	?
+  + command+	?
+  + annotate	?
+
+B regression tests
+  + extensions: namespace, acl, quota, uidplus
+  + login and the various authentication extensions
+  + lsub
+  + more complete testing of quoted strings and literals
+  + add more tests for fetched envelopes
+  + verify Date option in append method (some servers may not honor it)
+  + verify Flags option in append method (some servers may not honor it)
+  + tests for imap2addr conversion methods
+  + add ability to use non-local imap servers
+  + test against cyrus, netscape, microsoft, innosoft
+
++ documentation
+  + make sure the responses for extensions mention the appropriate extension
+  + document the valid states for the various extension commands
+  + document the response codes that need specific handling
+  + add info about how to handle login and mailbox referrals
+  + document which responses can be unsolicited
+    + also mention what they indicate and when they are likely to be seen
+
++ add some more examples
+-------------------------------------------------------------------------------
++ maybe have resp_codes have their own callbacks
+
++ write get_response that returns a list with the tag and rest of the
+  response, instead of Net::IMAP::Envelope->new and Net::IMAP::FetchData->new
+
++ some response objects can be wired directly into parent Net::IMAP object
+  + capability
+  + flags
+  + namespace
+  + others...
+
+B finish implementing authenticate command
+  + add support for the security layer
+  + figure out a reasonable way to hide auth info from debug command
+
++ add support for more extensions
+  + login referrals
+    + don't follow more than 10 referrals
+  + mailbox referrals
+  + idle
+  + tls
+  + various authentication extensions
+    + otp
+    + external
+    + digest
+    + gssapi
+    + kerberos_v4
+
++ add ability to generate group lists in Net::IMAP::Address
+
++ maybe figure out a nice way to interface to Mail::Internet and MIME::Entity
+
++ implement smart EOL <-> crlf processing in append method
+  check first line of string and adjust accordingly
+
+B add support for X* commands
+
+B implement and document prevention of ambiguous multiple pending requests
   + except for FETCH, STORE, and SEARCH, command must wait for a response
     before the following commands can be issued:
       FETCH, STORE, COPY, UID?, SEARCH (partially)
@@ -46,115 +132,108 @@ Net::IMAP
   + select/examine -> select/examine
   + others, no doubt...
 
-* add some stuff to help process data from fetch response objects
+B add various items from IMAP Implementation Recommendations
+  + look at limiting length of command lines through use of literals
+  + don't SELECT a mailbox that has \noselect flag set
+  + don't CREATE a submailbox in a mailbox that has \noinferiors flag set
+  + don't respond to a failing COPY or APPEND with a CREATE if the
+    server doesn't respond with a TRYCREATE response code
+  + always put a trailing hierarchy delimiter in LIST reference argument
+-------------------------------------------------------------------------------
++ write an interface for LWP (ala LWP::Protocol/ldap.pm)
 
-* add methods
-  + is_readonly/is_readwrite and others that will prevent the need to
-    access internal vars in the imap object.
-  + methods for accessing AuthTypes data structure info
-  + X* commands
-  + trap unknown commands
++ decide whether X-NON-HIERARCHICAL-RENAME bug in cyrus imapd needs
+  special handling
 
-* need to figure out which commands can result in a [PARSE] response
-  code and act accordingly
++ is there anything preventing module from being used in an off-line mode?
 
-* figure out best way to handle untagged OK, NO, and BAD responses.
-  (user-supplied callback?)
++ maybe implement the whole thing as two layers - the first layer is
+  pure IMAP calls with minimal caching - the second layer uses cache
+  information is it's available, only resorting to real imap calls if
+  the data isn't cached
 
-* implement checks for (and/or document) bad practices (per Mark Crispin)
-  + don't issue 'LIST "" *' command
-  + have STATUS command return failure if issued against an open folder.
-  + use STATUS only at the user's request.  There is a reason why
-    STATUS information is not part of LIST
+- maybe support older version of IMAP
+###############################################################################
+URI::imap
 
-* regression tests
+* need to write code for converting modified-utf7 <-> utf8
 
-* documentation
-  + make sure to add comment about using '' instead of '""'
-  + make sure docs have an admonition against gratuitous use of
-    'LIST "" *' recommend use of 'LIST "" %' as needed instead
-  + mention in docs that '*' can be used in a msgset
-  + make sure \* in PERMANENTFLAGS is documented
-  + make sure related RFCs are mentioned
+* need to do better job of preventing mutually exclusive url components
+  (last one in wins)
 
-+ consider some higher level functions than what IMAP provides in the
-  protocol:
-    fetch a list of all messages
+* write regression test
 
-+ try to collapse some of the methods into meta-methods
+* write documentation
+-------------------------------------------------------------------------------
+URI::acap
 
-+ figure out a best way to interface to Mail::Internet and MIME::Entity
+* write regression test
 
-+ need a few examples
-
-+ clean up select_callback
-
-+ maybe EXPUNGE response needs to update data in $self
-
-+ add support for some of the optional capabilities
-  + LITERAL+
-  + IDLE
-  + REFERRAL
-  + AUTHENTICATE CRAM-MD5
-  + ID (need to be able to optionally not use it even it it's available)
-
-+ resp_text can be MIME2 data
-
-+ maybe need to do something to handle modified-utf-7 mailbox names
-
-+ maybe have callbacks do stronger response data arg checking,
-  especially arg counts.
-
-+ maybe need to handle X-NON-HIERARCHICAL-RENAME bug in cyrus imapd
-
-+ decide whether we need to handle 'state'
-  (non-authenticated, authenticated, selected)
-
-+ date option in append command should be smarter about date string
-  passed in
-
-+ make sure case is being ignored on responses from server
-
-+ implement the authenticate command
-
-+ maybe interoperate with older servers
-
-+ is there anything preventing it from being used in off-line mode?
+* write documentation
 ###############################################################################
 Net::ACAP
 
-* finish converting ACAP to newer style of callbacks
+* if it makes it into the release, remove the appropriate lines from
+  the MANIFEST.SKIP file
 
-* parse banner string
+* use the PAREN type in more places
 
-* if unsafe chars are present in the user name or authentication
-  mechanism ([\s;]) they must be encoded as described in BASE-URL.
+* parse untagged condition responses
 
-* include ability to cancel authentication exchange with a '*' line
+* response codes of interest to authentication failure:
+  + auth-too-weak
+  + encrypt-needed
+  + transition-needed
+
+* make sure xAP character set for autoquotification is correct for acap
+
+* maybe coerse untagged ACAP response into an Acap object, otherwise
+  get rid of Net::ACAP::Acap class
+
+* figure out a way to take Return parm in search command into account
+  when processing entry responses
+
+* have deletedsince method accept an integer for its time parameter
+  if length(timearg) >= 14 then its an acap time string, else its an integer
+
+* have store method accept an integer for its unchangedsince parameter
+  if length(timearg) >= 14 then its an acap time string, else its an integer
+
+* UTF-8
 
 + spec limits size of an atom to 1024
 
-+ NUL octects are only permitted in values of attributes whose names
-  end with '.bin'.  client should send non-binary data as valid utf-8 data
++ NUL octets are only permitted in values of attributes whose names end with
+  '.bin'.  client should send non-binary data as valid utf-8 data
 
-+ are there any multiple-pending-commands ambiguities need to be
-  accounted for
++ context names must not start with '/'
 
-+ context names must not start with '/'.
++ need to handle extension responses
 
 + clients writing to a shared dataset SHOULD use UNCHANGEDSINCE when
   modifying an existing entry.
 
-+ make sure any 'server SHOULD' items aren't a problem if the 'server DOESNT'.
++ make sure any 'server SHOULD' items aren't a problem to the client
+  if the 'server DOESNT'
 
 + clients MUST ignore unknown server responses which meet the syntax
-  of response-extend or resp-code-ext.
+  of response-extend or resp-code-ext
+
++ maybe include ability to cancel authentication exchange with a '*' line
+
++ tons more to do...
+
 ###############################################################################
 Net::IMSP
 
+* if it makes it into the release, remove the appropriate lines from
+  the MANIFEST.SKIP file
+
+* convert IMSP to use newer callback design
+
 + implement core commands
 ###############################################################################
-Net::ICAP
+Net::ICAP				Note: this will probably do away
 
 + implement core commands
 ###############################################################################

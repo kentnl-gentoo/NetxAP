@@ -1,57 +1,29 @@
 #!/usr/bin/perl -wI..
 
+# This example illustrates using a callback to process "list" data.
+
 use Net::IMAP;
-use IO::File;
 
-my $host = 'localhost';
+my $host = '/usr/sbin/imapd';
 
-my $imap = new Net::IMAP($host, Debug => 1)
+my $imap = new Net::IMAP($host, Debug => 0)
   or die("can't connect to $host: $!\n");
 
-my $imap2 = new Net::IMAP($host, Debug => 1)
-  or die("can't connect to $host: $!\n");
+$imap->set_untagged_callback('list', \&do_list);
 
-$imap->noop or die "error sending noop: $!";
-$response = $imap->response;
+$response = $imap->list('~/Mail/', '%')
+  or warn("failed sending list command");
+if ($response->status ne 'ok') {
+  warn("list command returned ",
+       $response->status, " ", $response->text, "\n");
+}
 
-$imap2->noop;
-$response2 = $imap2->response;
+$response = $imap->logout or die "error sending logout: $!";
 
-$imap->login('anonymous', 'test@') or die "error sending login: $!";
-$response = $imap->response;
-
-$imap2->login('anonymous', 'test@') or die "error sending login: $!";
-$response2 = $imap2->response;
-
-$imap->select("INBOX.greeble");
-$response = $imap->response;
-
-$imap2->select("INBOX.greeble");
-$response2 = $imap2->response;
-
-my $fh = IO::File->new('atestfile')
-  or die "can't open atestfile: $!\n";
-my $str; while (<$fh>) { $str .= $_; }
-  
-$imap->append("INBOX.greeble", $str);
-$response = $imap->response;
-
-$imap2->noop;
-$response2 = $imap2->response;
-  
-$imap->fetch(1, 'FLAGS');
-$response = $imap->response;
-
-# $imap->_dump_internals;
-
-$imap->close;
-$response = $imap->response;
-
-$imap->logout or die "error sending logout: $!";
-$response = $imap->response;
-
-$imap2->close;
-$response2 = $imap2->response;
-
-$imap2->logout or die "error sending logout: $!";
-$response2 = $imap2->response;
+sub do_list {
+	my $self = shift;
+	my $resp = shift;
+	print "List: ", join(',', $resp->mailbox,
+				  $resp->delimiter,
+				  $resp->flags), "\n";
+}
