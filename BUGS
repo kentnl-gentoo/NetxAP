@@ -1,0 +1,15 @@
+bhahahahaha...
+
+General:
+
+	Literals in command arguments only work on last argument in
+	the list.
+
+IMAP:
+
+	The IMAP module hasn't been tested against very many IMAP servers.
+
+	There is not mechanism for preventing ambiguous multiple
+	pending requests.
+
+lots more, no doubt...

@@ -1,0 +1,61 @@
+This is an alpha release of the Net::xAP module package for perl5.
+
+This module provides an interface to the protocol family that the
+IMAP, IMSP, ACAP, and ICAP protocols are a member of.  I've included
+the beginnings of the IMAP.  The IMSP, ACAP, and ICAP modules will be
+following shortly.
+
+IMAP = Internet Message Access Protocol
+IMSP = Internet Message Support Protocol
+ACAP = Application Configuration Access Protocol
+ICAP = Internet Calendar Access Protocol
+
+WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+Think twice about using this module to modify data on a server.  I'm not
+done shaking out this thing.
+
+WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+The method interface is currently in an evaluation phase.  Since the
+module is at an early stage of it's life, I'm not going to try too
+hard to maintain backward compatability with older alpha versions.  I
+am, however, going to try to make all changes to the method interfaces
+before it reaches beta release.
+
+WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING! WARNING!
+In case the previous two warnings weren't enough for you - the
+protocols this package implements are still under development. Expect
+discontinuities between this package and the protocols as they trek
+towards standardness.  As of the writing this file, IMAP is a
+'Proposed Standard' protocol.  ACAP and ICAP are both 'Internet
+Drafts' and are subject to change at any time.  IMSP is going to be
+supplanted by ACAP.  ACAP is close to becoming a 'Proposed Standard'.
+ICAP is not even close to the end of it's draft stage.
+
+To build and install the package execute the following commands:
+	perl Makefile.PL
+	make
+	make test
+	make install
+
+The TODO file has a list of features which aren't present or complete
+yet.
+
+The NEWS file has summary information on the changes from release to
+release.
+
+The BUGS file has information on current implementation bugs/malfeatures.
+
+The CREDITS file lists folks who have been particularly helpful/brave.
+
+The current version has been developed and tested against 5.004.
+
+Please contact me if you use this for anything non-trivial.  This is
+not for permission, it's so I can get some idea of what folks are
+using the package for other than trivial scripts.
+
+Please report any bugs/suggestions to <kjj@pobox.com>.
+
+Copyright (c) 1997-1998 Kevin Johnson <kjj@pobox.com>.
+
+All rights reserved. This program is free software; you can
+redistribute it and/or modify it under the same terms as Perl itself.

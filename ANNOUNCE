@@ -1,0 +1,37 @@
+This posting is to announce the availability of the first alpha
+release of the Net::xAP module for perl.
+
+It has been posted to CPAN as NetxAP-0.01.tar.gz under my author id
+(KJOHNSON) and name (Kevin_Johnson).
+
+Net::xAP is a perl module that implements the protocol substrate
+present in the IMAP, IMSP, ACAP, and ICAP application protocols.  The
+beginnings of an IMAP module is also provided.  A framework for IMSP,
+ACAP, and ICAP modules is also provided.
+
+    IMAP = Internet Message Access Protocol
+    IMSP = Internet Message Support Protocol
+    ACAP = Application Configuration Access Protocol
+    ICAP = Internet Calendar Access Protocol
+
+The module is in alpha release.  Think twice (maybe thrice) about
+using it to modify data.  In addition, the method interface is
+currently in an evaluation phase.  Before it goes to beta, I expect to
+make method interface changes that won't be backwards compatible.
+
+The main purpose of this release is to get feedback on the interface
+and to run it through it's paces.  I am keenly interested in feedback
+from folks that have a non-trivial familiarity with the IMAP, IMSP,
+ACAP, or ICAP protocols.
+
+The current version has been tested against 5.004_04.
+
+Refer to the provided README file for additional information and
+warnings.
+
+Please report any bugs/suggestions to <kjj@pobox.com>.
+
+Copyright (c) 1997-1998 Kevin Johnson <kjj@pobox.com>
+
+All rights reserved.  This program is free software; you can
+redistribute it and/or modify it under the same terms as Perl itself.
