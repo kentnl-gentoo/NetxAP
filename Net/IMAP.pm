@@ -2466,7 +2466,7 @@ sub new {
   $self->{Mailbox} = shift(@fields);
   my %hash = @fields;
   for my $key (keys %hash) {
-    $self->{Identifiers}{lc{$key}} = $hash{$key};
+    $self->{Identifiers}{lc($key)} = $hash{$key};
   }
 
   return $self;
