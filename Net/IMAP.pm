@@ -2203,6 +2203,11 @@ sub new {
 
   $self->{Parent} = $parent;
 
+  if (!defined $str) {
+    $self->{Msgnums} = {};
+    return $self;
+  }
+
   for my $item (split(/\s/, $str)) {
     $self->{Msgnums}{$item}++;
   }
