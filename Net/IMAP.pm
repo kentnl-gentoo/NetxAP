@@ -2392,14 +2392,21 @@ sub new {
   $self->{Parent} = $parent;
 
   my $fields = Net::xAP->parse_fields($str);
-  for my $n (0 .. 2) {
-    my $field = $fields->[$n];
-    for my $item (@{$field}) {
-      $item->[1] = '' if (lc($item->[1]) eq 'nil');
-      $self->{Namespaces}{$namespace_types[$n]}{$item->[0]} = $item->[1];
+  if (lc($fields->[1]) eq 'nil')
+  {
+    for my $n (0 .. 2) {
+      $self->{Namespaces}{$namespace_types[$n]}{$fields->[0]} = '';
     }
   }
-
+  else
+  {
+    for my $n (0 .. 2) {
+      my $field = $fields->[$n];
+      for my $item (@{$field}) {
+        $self->{Namespaces}{$namespace_types[$n]}{$item->[0]} = $item->[1];
+      }
+    }
+  }
   return $self;
 }
 
