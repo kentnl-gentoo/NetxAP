@@ -233,6 +233,12 @@ sub new {
     return undef;
   }
 
+  unless ($self->has_capability("IMAP4rev1")){
+    carp "server does not support IMAP4rev1";
+    $self->close_connection or carp "error closing connection: $!";
+    return undef;
+  }
+
   return $self;
 }
 
@@ -261,14 +267,6 @@ sub _get_banner {
     $self->{PreAuth}++;
     $self->{State} = IMAP_STATE_AUTH;
   } elsif (($list->[0] ne '*') || ($list->[1] !~ /^ok$/i)) {
-    return undef;
-  }
-  my $supports_imap4rev1 = 0;
-  for my $item (@{$list}) {
-    $supports_imap4rev1++ if ($item =~ /^imap4rev1$/i);
-  }
-  unless ($supports_imap4rev1) {
-    $self->close_connection;
     return undef;
   }
 
