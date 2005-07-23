@@ -2089,7 +2089,8 @@ sub new {
   my %hash = @{Net::xAP->parse_fields($str)->[0]};
   for my $key (keys %hash) {
     my $lckey = lc($key);
-    print "$lckey $hash{$key}\n";
+    print "$lckey $hash{$key}\n"
+      if $parent->debug;
     if ($lckey eq 'envelope') {
       $self->{Items}{$lckey} = Net::IMAP::Envelope->new($hash{$key});
     } elsif (($lckey eq 'bodystructure') || ($lckey eq 'body')) {
