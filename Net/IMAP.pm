@@ -2622,8 +2622,8 @@ sub new {
   my @fields = @{Net::xAP->parse_fields($str)};
   $self->{QuotaRoot} = shift(@fields);
   while (@fields) {
-    my ($resource, $usage, $limit) = splice(@fields, 0, 3);
-    $self->{Quota}{lc($resource)} = [$usage, $limit];
+    my ($resource, $usage, $limit) = splice(@{$fields[0]}, 0, 3);
+    $self->{Quotas}{lc($resource)} = [$usage, $limit];
   }
 
   return $self;
