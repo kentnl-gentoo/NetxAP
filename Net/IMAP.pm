@@ -2830,6 +2830,7 @@ entity.
 
 package Net::IMAP::Multipart;
 use vars qw(@ISA);
+use Carp qw(carp);
 @ISA = qw(Net::IMAP::BodyStructure);
 
 sub new {
